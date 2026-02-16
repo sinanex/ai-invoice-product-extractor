@@ -8,10 +8,10 @@ require('@google-cloud/documentai').v1;
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-// const client = new DocumentProcessorServiceClient({
-//   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
-// });
-const client = new DocumentProcessorServiceClient();
+const client = new DocumentProcessorServiceClient({
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
+});
+// const client = new DocumentProcessorServiceClient();
 
 const PROJECT_ID = process.env.PROJECT_ID;
 const LOCATION = process.env.LOCATION;
