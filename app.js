@@ -7,8 +7,5 @@ const app = express();
 
 app.use(express.json());
 
-// API Route
 app.use('/api', scanRoute);
-
-// VERY IMPORTANT EXPORT
 module.exports = app;
