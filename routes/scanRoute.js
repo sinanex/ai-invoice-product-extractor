@@ -20,25 +20,50 @@ const LOCATION = process.env.LOCATION;
 const PROCESSOR_ID = process.env.PROCESSOR_ID;
 
 router.post('/scan', upload.single('bill'), async (req, res) => {
+  try {
 
-  const file = fs.readFileSync(req.file.path);
-
-  const name =
-  `projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}`;
-
-  const request = {
-    name: name,
-    rawDocument: {
-      content: file,
-      mimeType: 'image/jpeg'
+    if (!req.file) {
+      return res.status(400).json({
+        status: "error",
+        message: "No file uploaded"
+      });
     }
-  };
 
-  const [result] = await client.processDocument(request);
+    const file = fs.readFileSync(req.file.path);
 
-  const entities = result.document.entities;
+    const name = 
+    `projects/${PROJECT_ID}/locations/${LOCATION}/processors/${PROCESSOR_ID}`;
 
-  res.json(entities);
+    const request = {
+      name: name,
+      rawDocument: {
+        content: file,
+        mimeType: 'image/jpeg'
+      }
+    };
+
+    const [result] = await client.processDocument(request);
+
+    const entities = result.document.entities;
+
+    return res.status(200).json({
+      status: "success",
+      data: entities
+    });
+
+  } catch (error) {
+
+    console.error("Google Document AI Error:", error);
+
+    return res.status(error.code || 500).json({
+      status: "error",
+      message: error.message,
+      details: error.details || "Unknown error from Google",
+      code: error.code || 500
+    });
+
+  }
 });
+
 
 module.exports = router;
